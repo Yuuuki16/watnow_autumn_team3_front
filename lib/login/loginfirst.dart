@@ -4,8 +4,38 @@ import 'package:flutter/material.dart';
 const Color _primaryGreen = Color(0xFF386641); // 濃い緑の背景色
 const Color _lightGreen = Color(0xFF6A994E);  // テキストフィールドのボーダーやヒントに使う色
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _onLoginPressed() {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('メールアドレスとパスワードを入力してください')),
+      );
+      return;
+    }
+    // 仮の認証成功として Home に遷移
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const MyHomePage(title: 'Home')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +67,22 @@ class LoginPage extends StatelessWidget {
                   // メールアドレス
                   const Text('メールアドレス:', style: TextStyle(color: Colors.white)),
                   const SizedBox(height: 8.0),
-                  const TextField(
+                  TextField(
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(hintText: 'example@domain.com', fillColor: _primaryGreen),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 24.0),
 
                   // パスワード
                   const Text('パスワード:', style: TextStyle(color: Colors.white)),
                   const SizedBox(height: 8.0),
-                  const TextField(
+                  TextField(
+                    controller: _passwordController,
                     obscureText: true, // パスワードを隠す
+                    decoration: const InputDecoration(hintText: 'パスワード', fillColor: _primaryGreen),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 40.0),
 
@@ -55,9 +91,7 @@ class LoginPage extends StatelessWidget {
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // ログイン処理をここに記述
-                      },
+                      onPressed: _onLoginPressed,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white, // ボタンの背景を白に
                         foregroundColor: _primaryGreen, // 文字色を濃い緑に

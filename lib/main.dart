@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
 import 'login/loginfirst.dart';
 
-void main() {
-  runApp(const MyApp());
+/// ① Todoクラス（データの形だけ決める）
+class Todo {
+  // ✅ クラス定義
+  final String title; // ✅ インスタンス変数（インスタンス変数）
+  bool isDone; // ✅ インスタンス変数
+
+  Todo(this.title, {this.isDone = false}); // ✅ コンストラクタ
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+void main() {
+  // ✅ top-level 関数
+  runApp(const MyApp()); // ✅ MyApp のインスタンス生成＋関数呼び出し
+}
 
-  // This widget is the root of your application.
+/// ② アプリの入口（ここまでは今までとほぼ同じ）
+class MyApp extends StatelessWidget {
+  // ✅ クラス定義（StatelessWidget）
+  const MyApp({super.key}); // ✅ コンストラクタ
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       // loginfirst.dart で定義したテーマを適用
       theme: loginTheme,
-      home: const LoginPage(),
+      home: const LoginPage(), // まずはログイン画面から
     );
   }
 }
