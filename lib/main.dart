@@ -1,119 +1,200 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'login/loginfirst.dart';
 
 /// ① Todoクラス（データの形だけ決める）
 class Todo {
-  // ✅ クラス定義
-  final String title; // ✅ インスタンス変数（インスタンス変数）
-  bool isDone; // ✅ インスタンス変数
+final String title;
+bool isDone;
 
-  Todo(this.title, {this.isDone = false}); // ✅ コンストラクタ
+Todo(this.title, {this.isDone = false});
 }
 
 void main() {
-  // ✅ top-level 関数
-  runApp(const MyApp()); // ✅ MyApp のインスタンス生成＋関数呼び出し
+runApp(const MyApp());
 }
 
-/// ② アプリの入口（ここまでは今までとほぼ同じ）
+/// ② アプリの入口（MyApp）
 class MyApp extends StatelessWidget {
-  // ✅ クラス定義（StatelessWidget）
-  const MyApp({super.key}); // ✅ コンストラクタ
+const MyApp({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      // loginfirst.dart で定義したテーマを適用
-      theme: loginTheme,
-      home: const LoginPage(), // まずはログイン画面から
-    );
-  }
+@override
+Widget build(BuildContext context) {
+return MaterialApp(
+debugShowCheckedModeBanner: false,
+title: 'Flutter Demo',
+theme: loginTheme,
+home: const LoginPage(), // まずはログイン画面から
+);
+}
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+/// ③ アプリ全体の「親StatefulWidget」
+class AppState extends StatefulWidget {
+const AppState({super.key});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+@override
+State<AppState> createState() => _AppStateState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _AppStateState extends State<AppState> {
+int _currentIndex = 1;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+final List<Todo> _todos = [
+Todo('レポートを1つ終わらせる'),
+Todo('30分勉強する'),
+Todo('課題を1つ提出する'),
+];
 
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+int get _rawPercent {
+if (_todos.isEmpty) return 0;
+final done = _todos.where((t) => t.isDone).length;
+return ((done / _todos.length) * 100).round();
+}
+
+int get _cactusPercent {
+const levels = [0, 5, 10, 20, 30, 50, 90, 100];
+int closest = levels.first;
+int minDiff = (levels.first - _rawPercent).abs();
+
+```
+for (final level in levels) {
+  final diff = (level - _rawPercent).abs();
+  if (diff < minDiff) {
+    minDiff = diff;
+    closest = level;
   }
+}
+return closest;
+
+```
+
+}
+
+String get _cactusImagePath =>
+'assets/images/${_cactusPercent}per.png';
+
+void _toggleTodo(int index, bool? value) {
+setState(() {
+_todos[index].isDone = value ?? false;
+});
+}
+
+void _onTabTapped(int index) {
+setState(() {
+_currentIndex = index;
+});
+}
+
+Widget _buildCurrentPage() {
+switch (_currentIndex) {
+case 0:
+return const GroupPage();
+case 1:
+return HomePage(
+percent: _cactusPercent,
+imagePath: _cactusImagePath,
+);
+case 2:
+return TodoPage(
+todos: _todos,
+onToggle: _toggleTodo,
+);
+case 3:
+return const InsightPage();
+default:
+return const SizedBox.shrink();
+}
+}
+
+@override
+Widget build(BuildContext context) {
+return Scaffold(
+body: _buildCurrentPage(),
+bottomNavigationBar: SafeArea(
+child: Container(
+color: const Color(0xA8006400),
+height: 80,
+padding: const EdgeInsets.symmetric(vertical: 8),
+child: Row(
+mainAxisAlignment: MainAxisAlignment.center,
+children: [
+_BottomNavIcon(
+assetPath: 'assets/icons/icon_group.svg',
+activeAssetPath: 'assets/icons/active_group.svg',
+isActive: _currentIndex == 0,
+onTap: () => _onTabTapped(0),
+),
+const SizedBox(width: 34),
+_BottomNavIcon(
+assetPath: 'assets/icons/icon_home.svg',
+activeAssetPath: 'assets/icons/active_home.svg',
+isActive: _currentIndex == 1,
+onTap: () => _onTabTapped(1),
+),
+const SizedBox(width: 34),
+_BottomNavIcon(
+assetPath: 'assets/icons/icon_list.svg',
+activeAssetPath: 'assets/icons/active_list.svg',
+isActive: _currentIndex == 2,
+onTap: () => _onTabTapped(2),
+),
+const SizedBox(width: 34),
+_BottomNavIcon(
+assetPath: 'assets/icons/icon_insight.svg',
+activeAssetPath: 'assets/icons/active_insight.svg',
+isActive: _currentIndex == 3,
+onTap: () => _onTabTapped(3),
+),
+],
+),
+),
+),
+);
+}
+}
+
+/// フッターのアイコン用の小さい部品
+class _BottomNavIcon extends StatelessWidget {
+final String assetPath;
+final String activeAssetPath;
+final bool isActive;
+final VoidCallback onTap;
+final double size;
+
+const _BottomNavIcon({
+super.key,
+required this.assetPath,
+required this.activeAssetPath,
+required this.isActive,
+required this.onTap,
+this.size = 48,
+});
+
+@override
+Widget build(BuildContext context) {
+final pathToUse = isActive ? activeAssetPath : assetPath;
+final Color iconColor = isActive
+? const Color.fromARGB(255, 255, 255, 255)
+: const Color.fromARGB(217, 255, 255, 255);
+
+```
+return GestureDetector(
+  onTap: onTap,
+  child: Container(
+    padding: const EdgeInsets.all(6),
+    child: ColorFiltered(
+      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+      child: SvgPicture.asset(
+        pathToUse,
+        width: size,
+        height: size,
+      ),
+    ),
+  ),
+);
+
+```
+
+}
 }

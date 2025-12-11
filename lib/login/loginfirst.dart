@@ -1,174 +1,200 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'login/loginfirst.dart';
 
-// デザインに合わせて色を定義
-const Color _primaryGreen = Color(0xFF386641); // 濃い緑の背景色
-const Color _lightGreen = Color(0xFF6A994E);  // テキストフィールドのボーダーやヒントに使う色
+/// ① Todoクラス（データの形だけ決める）
+class Todo {
+final String title;
+bool isDone;
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
+Todo(this.title, {this.isDone = false});
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+void main() {
+runApp(const MyApp());
+}
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+/// ② アプリの入口（MyApp）
+class MyApp extends StatelessWidget {
+const MyApp({super.key});
+
+@override
+Widget build(BuildContext context) {
+return MaterialApp(
+debugShowCheckedModeBanner: false,
+title: 'Flutter Demo',
+theme: loginTheme,
+home: const LoginPage(), // まずはログイン画面から
+);
+}
+}
+
+/// ③ アプリ全体の「親StatefulWidget」
+class AppState extends StatefulWidget {
+const AppState({super.key});
+
+@override
+State<AppState> createState() => _AppStateState();
+}
+
+class _AppStateState extends State<AppState> {
+int _currentIndex = 1;
+
+final List<Todo> _todos = [
+Todo('レポートを1つ終わらせる'),
+Todo('30分勉強する'),
+Todo('課題を1つ提出する'),
+];
+
+int get _rawPercent {
+if (_todos.isEmpty) return 0;
+final done = _todos.where((t) => t.isDone).length;
+return ((done / _todos.length) * 100).round();
+}
+
+int get _cactusPercent {
+const levels = [0, 5, 10, 20, 30, 50, 90, 100];
+int closest = levels.first;
+int minDiff = (levels.first - _rawPercent).abs();
+
+```
+for (final level in levels) {
+  final diff = (level - _rawPercent).abs();
+  if (diff < minDiff) {
+    minDiff = diff;
+    closest = level;
   }
+}
+return closest;
 
-  void _onLoginPressed() {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('メールアドレスとパスワードを入力してください')),
-      );
-      return;
-    }
-    // 仮の認証成功として Home に遷移
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const MyHomePage(title: 'Home')),
-    );
-  }
+```
 
-  @override
-  Widget build(BuildContext context) {
-    // 画面のサイズを取得してPaddingの値を調整しやすくする
-    final screenHeight = MediaQuery.of(context).size.height;
+}
 
-    return Scaffold(
-      // キーボードが表示されたときに画面がリサイズされないようにする
-      resizeToAvoidBottomInset: false, 
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: Column(
-            // 要素を縦方向にスペースをあけて配置
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              // 1. ロゴと上部の余白
-              SizedBox(height: screenHeight * 0.15),
-              const Icon(
-                Icons.eco, // 芽のアイコンに最も近いものを使用
-                size: 100,
-                color: Colors.white,
-              ),
+String get _cactusImagePath =>
+'assets/images/${_cactusPercent}per.png';
 
-              // 2. フォームとボタン
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  // メールアドレス
-                  const Text('メールアドレス:', style: TextStyle(color: Colors.white)),
-                  const SizedBox(height: 8.0),
-                  TextField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(hintText: 'example@domain.com', fillColor: _primaryGreen),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(height: 24.0),
+void _toggleTodo(int index, bool? value) {
+setState(() {
+_todos[index].isDone = value ?? false;
+});
+}
 
-                  // パスワード
-                  const Text('パスワード:', style: TextStyle(color: Colors.white)),
-                  const SizedBox(height: 8.0),
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true, // パスワードを隠す
-                    decoration: const InputDecoration(hintText: 'パスワード', fillColor: _primaryGreen),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(height: 40.0),
+void _onTabTapped(int index) {
+setState(() {
+_currentIndex = index;
+});
+}
 
-                  // ログインボタン
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      onPressed: _onLoginPressed,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white, // ボタンの背景を白に
-                        foregroundColor: _primaryGreen, // 文字色を濃い緑に
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0), // 角丸を強くする
-                        ),
-                        textStyle: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      child: const Text('ログイン'),
-                    ),
-                  ),
-                ],
-              ),
-              
-              // 3. 下部の登録テキスト
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Text(
-                      'アカウントをお持ちでない方は',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // 登録ページへの遷移処理
-                      },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: const Size(40, 30),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: const Text(
-                        'こちら',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold, // 強調
-                          decoration: TextDecoration.underline, // 下線（画像にはないが視認性向上のため）
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+Widget _buildCurrentPage() {
+switch (_currentIndex) {
+case 0:
+return const GroupPage();
+case 1:
+return HomePage(
+percent: _cactusPercent,
+imagePath: _cactusImagePath,
+);
+case 2:
+return TodoPage(
+todos: _todos,
+onToggle: _toggleTodo,
+);
+case 3:
+return const InsightPage();
+default:
+return const SizedBox.shrink();
+}
+}
+
+@override
+Widget build(BuildContext context) {
+return Scaffold(
+body: _buildCurrentPage(),
+bottomNavigationBar: SafeArea(
+child: Container(
+color: const Color(0xA8006400),
+height: 80,
+padding: const EdgeInsets.symmetric(vertical: 8),
+child: Row(
+mainAxisAlignment: MainAxisAlignment.center,
+children: [
+_BottomNavIcon(
+assetPath: 'assets/icons/icon_group.svg',
+activeAssetPath: 'assets/icons/active_group.svg',
+isActive: _currentIndex == 0,
+onTap: () => _onTabTapped(0),
+),
+const SizedBox(width: 34),
+_BottomNavIcon(
+assetPath: 'assets/icons/icon_home.svg',
+activeAssetPath: 'assets/icons/active_home.svg',
+isActive: _currentIndex == 1,
+onTap: () => _onTabTapped(1),
+),
+const SizedBox(width: 34),
+_BottomNavIcon(
+assetPath: 'assets/icons/icon_list.svg',
+activeAssetPath: 'assets/icons/active_list.svg',
+isActive: _currentIndex == 2,
+onTap: () => _onTabTapped(2),
+),
+const SizedBox(width: 34),
+_BottomNavIcon(
+assetPath: 'assets/icons/icon_insight.svg',
+activeAssetPath: 'assets/icons/active_insight.svg',
+isActive: _currentIndex == 3,
+onTap: () => _onTabTapped(3),
+),
+],
+),
+),
+),
+);
+}
+}
+
+/// フッターのアイコン用の小さい部品
+class _BottomNavIcon extends StatelessWidget {
+final String assetPath;
+final String activeAssetPath;
+final bool isActive;
+final VoidCallback onTap;
+final double size;
+
+const _BottomNavIcon({
+super.key,
+required this.assetPath,
+required this.activeAssetPath,
+required this.isActive,
+required this.onTap,
+this.size = 48,
+});
+
+@override
+Widget build(BuildContext context) {
+final pathToUse = isActive ? activeAssetPath : assetPath;
+final Color iconColor = isActive
+? const Color.fromARGB(255, 255, 255, 255)
+: const Color.fromARGB(217, 255, 255, 255);
+
+```
+return GestureDetector(
+  onTap: onTap,
+  child: Container(
+    padding: const EdgeInsets.all(6),
+    child: ColorFiltered(
+      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+      child: SvgPicture.asset(
+        pathToUse,
+        width: size,
+        height: size,
       ),
-    );
-  }
-}
-
-// テーマを外部からも使えるように LoginTheme を提供
-final ThemeData loginTheme = ThemeData(
-  scaffoldBackgroundColor: _primaryGreen,
-  primaryColor: _primaryGreen,
-  inputDecorationTheme: const InputDecorationTheme(
-    filled: true,
-    fillColor: _primaryGreen,
-    contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(30.0)),
-      borderSide: BorderSide(color: _lightGreen, width: 2.0),
     ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(30.0)),
-      borderSide: BorderSide(color: _lightGreen, width: 2.0),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(30.0)),
-      borderSide: BorderSide(color: Colors.white, width: 2.0),
-    ),
-    hintStyle: TextStyle(color: _lightGreen),
   ),
 );
+
+```
+
+}
+}
