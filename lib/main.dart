@@ -2,10 +2,19 @@
 import 'package:flutter/material.dart';
 import 'login/loginfirst.dart'; // ログイン画面 & loginTheme を読み込む
 
-void main() {
-  runApp(const MyApp());
+/// ① Todoクラス（データの形だけ決める）
+class Todo {
+final String title;
+bool isDone;
+
+Todo(this.title, {this.isDone = false});
 }
 
+void main() {
+runApp(const MyApp());
+}
+
+/// ② アプリの入口（MyApp）
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

@@ -11,16 +11,18 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_svg: ^2.0.9
+
 
   # iOS 風アイコン
   cupertino_icons: ^1.0.8
+  flutter_svg: ^2.0.7 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+    
   flutter_lints: ^5.0.0
+
 
 flutter:
   # Material Icons を使う設定
@@ -30,7 +32,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-
+    - assets/fonts/
   # ✅ カスタムフォント
   fonts:
     - family: Banana
