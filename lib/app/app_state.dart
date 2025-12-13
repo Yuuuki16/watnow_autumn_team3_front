@@ -1,14 +1,12 @@
 // lib/app/app_state.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:watnow_autumn_team3_front/pages/home/home_page.dart';
+import 'package:watnow_autumn_team3_front/pages/home/group_page.dart';
+import 'package:watnow_autumn_team3_front/pages/home/todo_page.dart';
+import 'package:watnow_autumn_team3_front/pages/home/insight_page.dart';
+import 'package:watnow_autumn_team3_front/models/todo.dart';
 
-/// ① Todoクラス（データの形だけ決める）
-class Todo {
-  final String title;
-  bool isDone;
-
-  Todo(this.title, {this.isDone = false});
-}
 
 /// ② アプリ全体の「親StatefulWidget」
 class AppState extends StatefulWidget {
@@ -146,7 +144,6 @@ class _BottomNavIcon extends StatelessWidget {
   final double size;
 
   const _BottomNavIcon({
-    super.key,
     required this.assetPath,
     required this.activeAssetPath,
     required this.isActive,
@@ -178,78 +175,3 @@ class _BottomNavIcon extends StatelessWidget {
   }
 }
 
-/// ↓↓ ここから下は「仮のページ」
-///   あとで home_page.dart / todo_page.dart などに分割してOK
-
-class GroupPage extends StatelessWidget {
-  const GroupPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Group Page'));
-  }
-}
-
-class HomePage extends StatelessWidget {
-  final int percent;
-  final String imagePath;
-
-  const HomePage({
-    super.key,
-    required this.percent,
-    required this.imagePath,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('サボテン成長度：$percent%'),
-          const SizedBox(height: 16),
-          Image.asset(
-            imagePath,
-            width: 180,
-            height: 180,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TodoPage extends StatelessWidget {
-  final List<Todo> todos;
-  final void Function(int, bool?) onToggle;
-
-  const TodoPage({
-    super.key,
-    required this.todos,
-    required this.onToggle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: todos.length,
-      itemBuilder: (context, index) {
-        final todo = todos[index];
-        return CheckboxListTile(
-          title: Text(todo.title),
-          value: todo.isDone,
-          onChanged: (v) => onToggle(index, v),
-        );
-      },
-    );
-  }
-}
-
-class InsightPage extends StatelessWidget {
-  const InsightPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Insight Page'));
-  }
-}

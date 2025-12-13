@@ -1,20 +1,9 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
-import 'login/loginfirst.dart'; // ログイン画面 & loginTheme を読み込む
+import 'login/loginfirst.dart';
+import 'app/app_state.dart'; // ← AppStateを置いてる場所に合わせて変更
 
-/// ① Todoクラス（データの形だけ決める）
-class Todo {
-final String title;
-bool isDone;
+void main() => runApp(const MyApp());
 
-Todo(this.title, {this.isDone = false});
-}
-
-void main() {
-runApp(const MyApp());
-}
-
-/// ② アプリの入口（MyApp）
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -22,9 +11,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: loginTheme,         // ← loginfirst.dart で定義したテーマ
-      home: const LoginPage(),   // ← 最初に表示する画面
+      theme: loginTheme,
+      home: const LoginPage(),
     );
   }
 }

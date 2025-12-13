@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'createaccount.dart'; // 🔸 新規登録画面への遷移用
+import 'package:watnow_autumn_team3_front/app/app_state.dart'; // ← 追加
 
 // デザインに合わせて色を定義
 const Color _primaryGreen = Color(0xFF386641); // 濃い緑の背景色
@@ -96,9 +97,9 @@ class LoginPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         // TODO: ログイン成功したら AppState に遷移させる
-                        // Navigator.of(context).pushReplacement(
-                        //   MaterialPageRoute(builder: (_) => const AppState()),
-                        // );
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (_) => const AppState()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
