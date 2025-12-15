@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'loginfirst.dart'; // LoginPage を使うため
 
 // デザインに合わせて色を定義
 // ログイン画面と同じトーンで合わせている
 const Color _primaryGreen = Color(0xFF386641); // 濃い緑（ボタン・テキスト）
-const Color _lightGreen = Color(0xFF6A994E);  // 薄い緑（ボーダーなど）
+const Color _lightGreen = Color(0xFF6A994E); // 薄い緑（ボーダーなど）
 const Color _backgroundColor = Color(0xFFF7F7F0); // 薄いベージュの背景色
 
 class CreateAccountPage extends StatelessWidget {
@@ -69,11 +70,14 @@ class CreateAccountPage extends StatelessWidget {
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
-                  // TODO: 登録処理をここに記述
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                  );
                 },
+
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _primaryGreen, // ボタンの背景を濃い緑に
-                  foregroundColor: Colors.white,   // 文字色を白に
+                  foregroundColor: Colors.white, // 文字色を白に
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0), // 角丸
                   ),
@@ -102,7 +106,9 @@ class CreateAccountPage extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       // ログインページに戻る
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => const LoginPage()),
+                      );
                     },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
@@ -138,10 +144,7 @@ class CreateAccountPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          label,
-          style: const TextStyle(color: _primaryGreen, fontSize: 16),
-        ),
+        Text(label, style: const TextStyle(color: _primaryGreen, fontSize: 16)),
         const SizedBox(height: 8.0),
         TextField(
           obscureText: isPassword,

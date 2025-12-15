@@ -1,16 +1,14 @@
 // lib/app/app_state.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:watnow_autumn_team3_front/pages/home/insight/insight_page.dart';
 
-/// ① Todoクラス（データの形だけ決める）
 class Todo {
   final String title;
   bool isDone;
-
   Todo(this.title, {this.isDone = false});
 }
 
-/// ② アプリ全体の「親StatefulWidget」
 class AppState extends StatefulWidget {
   const AppState({super.key});
 
@@ -27,14 +25,12 @@ class _AppStateState extends State<AppState> {
     Todo('課題を1つ提出する'),
   ];
 
-  /// 完了率（0〜100の生の％）
   int get _rawPercent {
     if (_todos.isEmpty) return 0;
     final done = _todos.where((t) => t.isDone).length;
     return ((done / _todos.length) * 100).round();
   }
 
-  /// サボテン用の段階に丸めた％
   int get _cactusPercent {
     const levels = [0, 5, 10, 20, 30, 50, 90, 100];
     int closest = levels.first;
@@ -50,25 +46,20 @@ class _AppStateState extends State<AppState> {
     return closest;
   }
 
-  /// サボテン画像のパス
-  String get _cactusImagePath =>
-      'assets/images/${_cactusPercent}per.png';
+  String get _cactusImagePath => 'assets/images/${_cactusPercent}per.png';
 
-  /// ToDo のチェックが変わったとき
   void _toggleTodo(int index, bool? value) {
     setState(() {
       _todos[index].isDone = value ?? false;
     });
   }
 
-  /// タブがタップされたとき
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
   }
 
-  /// 今のタブに応じてページを返す
   Widget _buildCurrentPage() {
     switch (_currentIndex) {
       case 0:
@@ -137,7 +128,6 @@ class _AppStateState extends State<AppState> {
   }
 }
 
-/// フッターのアイコン用の小さい部品
 class _BottomNavIcon extends StatelessWidget {
   final String assetPath;
   final String activeAssetPath;
@@ -167,23 +157,17 @@ class _BottomNavIcon extends StatelessWidget {
         padding: const EdgeInsets.all(6),
         child: ColorFiltered(
           colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-          child: SvgPicture.asset(
-            pathToUse,
-            width: size,
-            height: size,
-          ),
+          child: SvgPicture.asset(pathToUse, width: size, height: size),
         ),
       ),
     );
   }
 }
 
-/// ↓↓ ここから下は「仮のページ」
-///   あとで home_page.dart / todo_page.dart などに分割してOK
+// ===== 仮ページ（このままでもOK） =====
 
 class GroupPage extends StatelessWidget {
   const GroupPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return const Center(child: Text('Group Page'));
@@ -194,11 +178,7 @@ class HomePage extends StatelessWidget {
   final int percent;
   final String imagePath;
 
-  const HomePage({
-    super.key,
-    required this.percent,
-    required this.imagePath,
-  });
+  const HomePage({super.key, required this.percent, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -208,11 +188,7 @@ class HomePage extends StatelessWidget {
         children: [
           Text('サボテン成長度：$percent%'),
           const SizedBox(height: 16),
-          Image.asset(
-            imagePath,
-            width: 180,
-            height: 180,
-          ),
+          Image.asset(imagePath, width: 180, height: 180),
         ],
       ),
     );
@@ -223,11 +199,7 @@ class TodoPage extends StatelessWidget {
   final List<Todo> todos;
   final void Function(int, bool?) onToggle;
 
-  const TodoPage({
-    super.key,
-    required this.todos,
-    required this.onToggle,
-  });
+  const TodoPage({super.key, required this.todos, required this.onToggle});
 
   @override
   Widget build(BuildContext context) {
@@ -242,14 +214,5 @@ class TodoPage extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-class InsightPage extends StatelessWidget {
-  const InsightPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Insight Page'));
   }
 }
