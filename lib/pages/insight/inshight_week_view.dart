@@ -212,7 +212,25 @@ Widget _buildHabitRhythmCard() {
 Widget _buildBarChart() {
   // 実際のグラフ描画は external package (e.g., fl_chart) が必要ですが、ここではダミーとして画像をトリガーします。
   // ユーザーが意図する「グラフ」のイメージを伝えるために画像タグを使用します。
-  return Center(child:       );
+  return Center(
+    child: SizedBox(
+      width: 260,
+      height: 140,
+      child: Card(
+        elevation: 2,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(Icons.bar_chart, size: 48, color: Colors.green),
+              SizedBox(height: 8),
+              Text('グラフのプレースホルダ', style: TextStyle(color: Colors.black54)),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 Widget _buildFeedbackCard(String title, String content) {
