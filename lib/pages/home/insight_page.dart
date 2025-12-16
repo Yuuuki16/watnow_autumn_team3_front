@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import '../insight/insight_all_view.dart';
 
 class InsightPage extends StatelessWidget {
   const InsightPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Insight（仮）')),
-    );
+    // insight_all_view.dart の VerticalPageViewScreen をそのまま表示する
+    return const VerticalPageViewScreen();
   }
 }

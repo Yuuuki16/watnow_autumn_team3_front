@@ -1,31 +1,5 @@
 import 'package:flutter/material.dart';
 
-// メインアプリケーション
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Vertical PageView Demo 2',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        // 背景色をご提示の画像に近い薄い色に設定
-        scaffoldBackgroundColor: const Color(0xFFFBFBF5), 
-        appBarTheme: const AppBarTheme(
-          color: Color(0xFFFBFBF5), // AppBarの背景も合わせる
-          elevation: 0,
-        ),
-      ),
-      home: const VerticalPageViewScreen(),
-    );
-  }
-}
-
 // 縦スクロールのPageViewを持つ画面
 class VerticalPageViewScreen extends StatelessWidget {
   const VerticalPageViewScreen({super.key});
