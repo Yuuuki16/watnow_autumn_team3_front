@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../insight/insight_all_view.dart' as all_view;
-import '../insight/insight_week_view.dart' as week_view;
+import '../insight/inshight_week_view.dart' as week_view; // 注意: ファイル名に "s" が抜けている既存ファイルを参照
 
 class InsightPage extends StatelessWidget {
   const InsightPage({super.key});

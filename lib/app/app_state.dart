@@ -77,10 +77,8 @@ class _AppStateState extends State<AppState> {
           imagePath: _cactusImagePath,
         );
       case 2:
-        return TodoPage(
-          todos: _todos,
-          onToggle: _toggleTodo,
-        );
+        // Show the WeeklyTaskScreen defined in lib/models/todo.dart
+        return const WeeklyTaskScreen();
       case 3:
         return const InsightPage();
       default:
