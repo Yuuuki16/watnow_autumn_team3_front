@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:watnow_autumn_team3_front/models/todo_popup.dart';
+
 class Todo {
   final String title;
   bool isDone;
@@ -126,27 +128,37 @@ class WeeklyTaskScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ...tasks.map((task) => Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              children: [
-                Icon(
-                  task.isCompleted ? Icons.check_circle : Icons.check_circle_outline,
-                  color: task.isCompleted ? const Color(0xFF386641) : const Color(0xFFD0D0D0),
-                  size: 28,
+          ...tasks.map((task) => Builder(builder: (context) {
+            return GestureDetector(
+              onTap: () {
+                // タスク名をタップしたら編集画面を開く
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const TaskEditScreen(),
+                ));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      task.isCompleted ? Icons.check_circle : Icons.check_circle_outline,
+                      color: task.isCompleted ? const Color(0xFF386641) : const Color(0xFFD0D0D0),
+                      size: 28,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      task.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Text(
-                  task.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 1.1,
-                  ),
-                ),
-              ],
-            ),
-          )).toList(),
+              ),
+            );
+          })).toList(),
         ],
       ),
     );
