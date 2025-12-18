@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:watnow_autumn_team3_front/pages/settings/settings_page.dart';
+// import 'package:watnow_autumn_team3_front/pages/settings/settings_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -20,18 +20,18 @@ class HomePage extends StatelessWidget {
         child: Stack(
           children: [
             // 右上：設定アイコン（アカウント設定へ）
-            Positioned(
-              top: 12,
-              right: 12,
-              child: IconButton(
-                icon: const Icon(Icons.person_outline, color: Colors.white),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const SettingsPage()),
-                  );
-                },
-              ),
-            ),
+            // Positioned(
+            //   top: 12,
+            //   right: 12,
+            //   child: IconButton(
+            //     icon: const Icon(Icons.person_outline, color: Colors.white),
+            //     onPressed: () {
+            //       Navigator.of(context).push(
+            //         MaterialPageRoute(builder: (_) => const SettingsPage()),
+            //       );
+            //     },
+            //   ),
+            // ),
 
             // 中央：成長度テキスト + サボテン画像
             Center(
