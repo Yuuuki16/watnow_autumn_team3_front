@@ -1,33 +1,75 @@
 import 'package:flutter/material.dart';
-import 'package:watnow_autumn_team3_front/models/todo_popup.dart';
-// ... (MyAppなどの部分は変更なし)
 
+// --- 1. データモデルの定義 ---
+class Todo {
+  final String title;
+  bool isDone;
+  String day;
+
+  Todo({required this.title, required this.isDone, required this.day});
+}
+
+void main() {
+  runApp(const MyApp());
+}
+
+// --- 2. アプリ全体の基本設定 ---
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFFBFBF5),
+        fontFamily: 'sans-serif',
+      ),
+      home: const WeeklyTaskScreen(),
+    );
+  }
+}
+
+// --- 3. メイン画面の定義 (StatefulWidget) ---
+class WeeklyTaskScreen extends StatefulWidget {
+  const WeeklyTaskScreen({super.key});
+
+  @override
+  State<WeeklyTaskScreen> createState() => _WeeklyTaskScreenState();
+}
+
+// --- 4. 画面の状態と動きを管理するクラス ---
 class _WeeklyTaskScreenState extends State<WeeklyTaskScreen> {
-  // タスクのデータをリストとして変数にもつ
+  // タスクのデータリスト
   final List<Todo> _tasks = [
     Todo(title: '英語SW 課題', isDone: true, day: '月曜日'),
     Todo(title: '経済学入門', isDone: true, day: '火曜日'),
     Todo(title: '数学の宿題', isDone: false, day: '水曜日'),
   ];
 
-  // 1. 入力用コントローラーと、ダイアログで選択中の曜日を管理する変数
   final TextEditingController _controller = TextEditingController();
-  String _selectedDay = '月曜日'; // デフォルト値
+  String _selectedDay = '月曜日';
   final List<String> _daysList = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
 
-  // チェックを切り替える関数
+  // チェック切り替え
   void _toggleTask(Todo task) {
     setState(() {
       task.isDone = !task.isDone;
     });
   }
 
-  // 2. 新しいタスクを追加するためのダイアログを表示する関数
+  // タスク削除
+  void _deleteTask(Todo task) {
+    setState(() {
+      _tasks.remove(task);
+    });
+  }
+
+  // タスク追加ダイアログ
   void _showAddTaskDialog() {
     showDialog(
       context: context,
       builder: (context) {
-        // StatefulBuilderを使うと、ダイアログ内での「曜日の選択」がリアルタイムに画面に反映されます
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
@@ -45,13 +87,9 @@ class _WeeklyTaskScreenState extends State<WeeklyTaskScreen> {
                     value: _selectedDay,
                     isExpanded: true,
                     items: _daysList.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
+                      return DropdownMenuItem<String>(value: value, child: Text(value));
                     }).toList(),
                     onChanged: (newValue) {
-                      // ダイアログ内の表示を更新
                       setDialogState(() {
                         _selectedDay = newValue!;
                       });
@@ -60,15 +98,11 @@ class _WeeklyTaskScreenState extends State<WeeklyTaskScreen> {
                 ],
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('キャンセル'),
-                ),
+                TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
                 ElevatedButton(
                   onPressed: () {
                     if (_controller.text.isNotEmpty) {
                       setState(() {
-                        // _tasks.add を使って、現在のTodoモデルに合わせたデータを追加
                         _tasks.add(Todo(
                           title: _controller.text,
                           isDone: false,
@@ -89,20 +123,38 @@ class _WeeklyTaskScreenState extends State<WeeklyTaskScreen> {
     );
   }
 
+  // 削除確認ダイアログ
+  void _showDeleteDialog(Todo task) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('タスクの削除'),
+        content: Text('「${task.title}」を削除しますか？'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('キャンセル')),
+          TextButton(
+            onPressed: () {
+              _deleteTask(task);
+              Navigator.pop(context);
+            },
+            child: const Text('削除', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 曜日のリスト（表示順）
-    final days = _daysList;
-
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(), // ヘッダー
+            _buildHeader(),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: days.map((day) {
+                children: _daysList.map((day) {
                   final dayTasks = _tasks.where((t) => t.day == day).toList();
                   return _buildDaySection(day, dayTasks);
                 }).toList(),
@@ -126,7 +178,7 @@ class _WeeklyTaskScreenState extends State<WeeklyTaskScreen> {
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: Color(0xFF386641))),
               const SizedBox(width: 12),
               GestureDetector(
-                onTap: _showAddTaskDialog, // 3. ここで追加ダイアログを呼び出す
+                onTap: _showAddTaskDialog,
                 child: Container(
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(color: const Color(0xFF386641), borderRadius: BorderRadius.circular(4)),
@@ -141,7 +193,6 @@ class _WeeklyTaskScreenState extends State<WeeklyTaskScreen> {
     );
   }
 
-  // _buildDaySection メソッド（変更なし）
   Widget _buildDaySection(String day, List<Todo> tasks) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24.0),
@@ -154,6 +205,7 @@ class _WeeklyTaskScreenState extends State<WeeklyTaskScreen> {
             const Text('タスクなし', style: TextStyle(color: Colors.grey, fontSize: 14)),
           ...tasks.map((task) => GestureDetector(
             onTap: () => _toggleTask(task),
+            onLongPress: () => _showDeleteDialog(task),
             child: Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Row(
@@ -176,53 +228,9 @@ class _WeeklyTaskScreenState extends State<WeeklyTaskScreen> {
                 ],
               ),
             ),
-          )),
+          )).toList(),
         ],
       ),
     );
   }
-}
-
-
-
-
-
-
-
-
-
-
-class Todo {
-  final String title;
-  bool isDone;
-  String day;
-
-  Todo({required this.title, required this.isDone, required this.day});
-}
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFFBFBF5), // 背景色を再現
-        fontFamily: 'sans-serif',
-      ),
-      home: const WeeklyTaskScreen(),
-    );
-  }
-}
-
-class WeeklyTaskScreen extends StatefulWidget {
-  const WeeklyTaskScreen({super.key});
-
-  @override
-  State<WeeklyTaskScreen> createState() => _WeeklyTaskScreenState();
 }
