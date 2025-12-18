@@ -29,11 +29,6 @@ class _AppStateState extends State<AppState> {
     Todo(title: '数学の宿題', isDone: false, day: '水曜日'),
   ];
 
-  // final List<Todo> _todos = [
-  //   Todo(title: 'レポートを1つ終わらせる'),
-  //   Todo('30分勉強する'),
-  //   Todo('課題を1つ提出する'),
-  // ];
 
   /// 完了率（0〜100の生の％）
   int get _rawPercent {
