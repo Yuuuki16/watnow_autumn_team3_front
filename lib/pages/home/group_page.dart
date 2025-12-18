@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:watnow_autumn_team3_front/pages/home/todo_page.dart';
+import 'package:watnow_autumn_team3_front/pages/home/todo/todo_models.dart';
 
 class GroupPage extends StatelessWidget {
   const GroupPage({
@@ -34,15 +34,14 @@ class GroupPage extends StatelessWidget {
                   Text(
                     'みんなのサボテン',
                     style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 38,
+                      fontWeight: FontWeight.bold,
                       color: titleColor,
-                      letterSpacing: 2,
                       fontFamily: 'Building',
                       shadows: [
                         Shadow(
-                          color: Color.fromARGB(60, 0, 0, 0),
-                          offset: Offset(0, 4),
+                          color: Color.fromRGBO(0, 0, 0, 0.25),
+                          offset: Offset(0, 3),
                           blurRadius: 6,
                         ),
                       ],
@@ -203,4 +202,3 @@ class _TaskList extends StatelessWidget {
     );
   }
 }
-
