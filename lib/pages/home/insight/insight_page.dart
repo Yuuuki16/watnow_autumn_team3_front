@@ -21,14 +21,13 @@ class InsightPage extends StatelessWidget {
             indicatorColor: Colors.green,
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            all_view.VerticalPageViewScreen(),
-            week_view.VerticalPageViewScreen(),
+            all_view.InsightAllView(),
+            week_view.InsightWeekView(),
           ],
         ),
       ),
     );
   }
 }
-
