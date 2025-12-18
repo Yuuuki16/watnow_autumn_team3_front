@@ -19,11 +19,21 @@ class AppState extends StatefulWidget {
 class _AppStateState extends State<AppState> {
   int _currentIndex = 1;
 
+  // lib/app/app_state.dart 内のリスト定義部分
+
   final List<Todo> _todos = [
-    Todo('レポートを1つ終わらせる'),
-    Todo('30分勉強する'),
-    Todo('課題を1つ提出する'),
+    // ❌ Todo('英語SW 課題', true, '月曜日') はNG
+    // ✅ 下記のように「名前: 値」の形式にする
+    Todo(title: '英語SW 課題', isDone: true, day: '月曜日'),
+    Todo(title: '経済学入門', isDone: true, day: '火曜日'),
+    Todo(title: '数学の宿題', isDone: false, day: '水曜日'),
   ];
+
+  // final List<Todo> _todos = [
+  //   Todo(title: 'レポートを1つ終わらせる'),
+  //   Todo('30分勉強する'),
+  //   Todo('課題を1つ提出する'),
+  // ];
 
   /// 完了率（0〜100の生の％）
   int get _rawPercent {
