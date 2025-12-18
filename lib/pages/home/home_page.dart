@@ -1,57 +1,95 @@
 import 'package:flutter/material.dart';
-// import 'package:watnow_autumn_team3_front/pages/settings/settings_page.dart';
 
 class HomePage extends StatelessWidget {
+  final int percent;
+  final String imagePath;
+
   const HomePage({
     super.key,
     required this.percent,
     required this.imagePath,
   });
 
-  final int percent;
-  final String imagePath;
-
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: const Color(0xFF386641), // 背景（今までの緑系に合わせる）
-        width: double.infinity,
+    const titleColor = Color(0xD9006400);
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFFAF9F6),
+      body: SafeArea(
+        top: true,
+        bottom: false,
         child: Stack(
           children: [
-            // 右上：設定アイコン（アカウント設定へ）
-            // Positioned(
-            //   top: 12,
-            //   right: 12,
-            //   child: IconButton(
-            //     icon: const Icon(Icons.person_outline, color: Colors.white),
-            //     onPressed: () {
-            //       Navigator.of(context).push(
-            //         MaterialPageRoute(builder: (_) => const SettingsPage()),
-            //       );
-            //     },
-            //   ),
-            // ),
-
-            // 中央：成長度テキスト + サボテン画像
-            Center(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
-                    'サボテン成長度：$percent%',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                  const SizedBox(height: 140),
+                  const Text(
+                    '達成度',
+                    style: TextStyle(
+                      fontSize: 55,
+                      color: titleColor,
+                      fontFamily: 'Building',
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Image.asset(
-                    imagePath,
-                    width: 220,
-                    height: 220,
-                    fit: BoxFit.contain,
+                  const SizedBox(height: 4),
+                  Text(
+                    '$percent%',
+                    semanticsLabel: '達成度$percentパーセント',
+                    style: const TextStyle(
+                      fontSize: 42,
+                      fontWeight: FontWeight.bold,
+                      color: titleColor,
+                      fontFamily: 'Building',
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(
+                        imagePath,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 40,
+              left: 28,
+              right: 16,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'ホーム',
+                    style: TextStyle(
+                      color: titleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 38,
+                      fontFamily: 'Building',
+                      shadows: [
+                        Shadow(
+                          color: Color.fromRGBO(0, 0, 0, 0.25),
+                          offset: Offset(0, 3),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(21),
+                    child: Image.asset(
+                      'assets/images/aikon.png',
+                      width: 42,
+                      height: 42,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ],
               ),
