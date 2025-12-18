@@ -1,13 +1,10 @@
 // lib/app/app_state.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:watnow_autumn_team3_front/pages/home/home_page.dart';
 import 'package:watnow_autumn_team3_front/pages/home/insight/insight_page.dart';
-
-class Todo {
-  final String title;
-  bool isDone;
-  Todo(this.title, {this.isDone = false});
-}
+import 'package:watnow_autumn_team3_front/pages/home/todo_page.dart';
+import 'package:watnow_autumn_team3_front/pages/home/group_page.dart';
 
 class AppState extends StatefulWidget {
   const AppState({super.key});
@@ -19,16 +16,35 @@ class AppState extends StatefulWidget {
 class _AppStateState extends State<AppState> {
   int _currentIndex = 1;
 
-  final List<Todo> _todos = [
-    Todo('レポートを1つ終わらせる'),
-    Todo('30分勉強する'),
-    Todo('課題を1つ提出する'),
+  final List<WeeklyTask> _weeklyTasks = [
+    WeeklyTask(
+      dayLabel: '月曜日',
+      tasks: [
+        TaskItem(title: '英語ＳＷ　課題', isDone: true),
+      ],
+    ),
+    WeeklyTask(
+      dayLabel: '火曜日',
+      tasks: [
+        TaskItem(title: '経済学入門', isDone: true),
+      ],
+    ),
+    WeeklyTask(dayLabel: '水曜日', tasks: []),
+    WeeklyTask(dayLabel: '木曜日', tasks: []),
+    WeeklyTask(dayLabel: '金曜日', tasks: []),
+    WeeklyTask(dayLabel: '土曜日', tasks: []),
+    WeeklyTask(dayLabel: '日曜日', tasks: []),
   ];
 
   int get _rawPercent {
-    if (_todos.isEmpty) return 0;
-    final done = _todos.where((t) => t.isDone).length;
-    return ((done / _todos.length) * 100).round();
+    final total =
+        _weeklyTasks.fold<int>(0, (sum, day) => sum + day.tasks.length);
+    if (total == 0) return 0;
+    final done = _weeklyTasks.fold<int>(
+      0,
+      (sum, day) => sum + day.tasks.where((t) => t.isDone).length,
+    );
+    return ((done / total) * 100).round();
   }
 
   int get _cactusPercent {
@@ -48,10 +64,34 @@ class _AppStateState extends State<AppState> {
 
   String get _cactusImagePath => 'assets/images/${_cactusPercent}per.png';
 
-  void _toggleTodo(int index, bool? value) {
+  void _toggleTask(int dayIndex, int taskIndex, bool value) {
     setState(() {
-      _todos[index].isDone = value ?? false;
+      _weeklyTasks[dayIndex].tasks[taskIndex].isDone = value;
     });
+  }
+
+  void _addTask(NewTaskInput input) {
+    final dayIndex =
+        _weeklyTasks.indexWhere((element) => element.dayLabel == input.dayLabel);
+    setState(() {
+      if (dayIndex == -1) {
+        _weeklyTasks.add(
+          WeeklyTask(
+            dayLabel: input.dayLabel,
+            tasks: [TaskItem(title: input.title)],
+          ),
+        );
+      } else {
+        _weeklyTasks[dayIndex].tasks.add(TaskItem(title: input.title));
+      }
+    });
+  }
+
+  void _openTaskInput(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => TaskInputDialog(onSave: _addTask),
+    );
   }
 
   void _onTabTapped(int index) {
@@ -63,7 +103,12 @@ class _AppStateState extends State<AppState> {
   Widget _buildCurrentPage() {
     switch (_currentIndex) {
       case 0:
-        return const GroupPage();
+        return GroupPage(
+          memberName: 'サボテン さん',
+          weeklyTasks: _weeklyTasks,
+          percent: _cactusPercent,
+          cactusImagePath: _cactusImagePath,
+        );
       case 1:
         return HomePage(
           percent: _cactusPercent,
@@ -71,8 +116,9 @@ class _AppStateState extends State<AppState> {
         );
       case 2:
         return TodoPage(
-          todos: _todos,
-          onToggle: _toggleTodo,
+          weeklyTasks: _weeklyTasks,
+          onToggleTask: _toggleTask,
+          onTapAdd: () => _openTaskInput(context),
         );
       case 3:
         return const InsightPage();
@@ -129,20 +175,17 @@ class _AppStateState extends State<AppState> {
 }
 
 class _BottomNavIcon extends StatelessWidget {
-  final String assetPath;
-  final String activeAssetPath;
-  final bool isActive;
-  final VoidCallback onTap;
-  final double size;
-
   const _BottomNavIcon({
-    super.key,
     required this.assetPath,
     required this.activeAssetPath,
     required this.isActive,
     required this.onTap,
-    this.size = 48,
   });
+
+  final String assetPath;
+  final String activeAssetPath;
+  final bool isActive;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -157,62 +200,9 @@ class _BottomNavIcon extends StatelessWidget {
         padding: const EdgeInsets.all(6),
         child: ColorFiltered(
           colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-          child: SvgPicture.asset(pathToUse, width: size, height: size),
+          child: SvgPicture.asset(pathToUse, width: 48, height: 48),
         ),
       ),
-    );
-  }
-}
-
-// ===== 仮ページ（このままでもOK） =====
-
-class GroupPage extends StatelessWidget {
-  const GroupPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Group Page'));
-  }
-}
-
-class HomePage extends StatelessWidget {
-  final int percent;
-  final String imagePath;
-
-  const HomePage({super.key, required this.percent, required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('サボテン成長度：$percent%'),
-          const SizedBox(height: 16),
-          Image.asset(imagePath, width: 180, height: 180),
-        ],
-      ),
-    );
-  }
-}
-
-class TodoPage extends StatelessWidget {
-  final List<Todo> todos;
-  final void Function(int, bool?) onToggle;
-
-  const TodoPage({super.key, required this.todos, required this.onToggle});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: todos.length,
-      itemBuilder: (context, index) {
-        final todo = todos[index];
-        return CheckboxListTile(
-          title: Text(todo.title),
-          value: todo.isDone,
-          onChanged: (v) => onToggle(index, v),
-        );
-      },
     );
   }
 }
