@@ -1,38 +1,34 @@
 import 'package:flutter/material.dart';
-import 'insight_week_view.dart';
-import 'insight_all_view.dart';
+import '../insight/insight_all_view.dart' as all_view;
+import '../insight/insight_week_view.dart' as week_view;
 
-class InsightPage extends StatefulWidget {
+class InsightPage extends StatelessWidget {
   const InsightPage({super.key});
 
   @override
-  State<InsightPage> createState() => _InsightPageState();
-}
-
-class _InsightPageState extends State<InsightPage> {
-  int _index = 0;
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Insight')),
-      body: _index == 0
-          ? const InsightWeekView()
-          : const InsightAllView(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
-        onTap: (i) => setState(() => _index = i),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_view_week),
-            label: '週',
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 1,
+          title: const Text('インサイト', style: TextStyle(color: Colors.black)),
+          bottom: const TabBar(
+            tabs: [Tab(text: '全体'), Tab(text: '週間')],
+            labelColor: Colors.green,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Colors.green,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.insights),
-            label: '全体',
-          ),
-        ],
+        ),
+        body: const TabBarView(
+          children: [
+            all_view.VerticalPageViewScreen(),
+            week_view.VerticalPageViewScreen(),
+          ],
+        ),
       ),
     );
   }
 }
+
