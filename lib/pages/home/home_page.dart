@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatelessWidget {
   final int percent;
   final String imagePath;
+  final VoidCallback? onTapSetting;
 
   const HomePage({
     super.key,
     required this.percent,
     required this.imagePath,
+    this.onTapSetting,
   });
 
   @override
@@ -60,9 +63,9 @@ class HomePage extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 40,
+              top: 32,
               left: 28,
-              right: 16,
+              right: 28,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -82,13 +85,13 @@ class HomePage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(21),
-                    child: Image.asset(
-                      'assets/images/aikon.png',
-                      width: 42,
-                      height: 42,
-                      fit: BoxFit.cover,
+                  GestureDetector(
+                    onTap: onTapSetting,
+                    behavior: HitTestBehavior.opaque,
+                    child: SvgPicture.asset(
+                      'assets/icons/setting.svg',
+                      width: 32,
+                      height: 32,
                     ),
                   ),
                 ],

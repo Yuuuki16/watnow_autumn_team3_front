@@ -6,12 +6,14 @@ class TaskItem {
     this.isDone = false,
     this.deadline,
     this.expectedDate,
+    this.repeat,
   });
 
   final String title;
   bool isDone;
   final DateTime? deadline;
   final DateTime? expectedDate;
+  final String? repeat;
 }
 
 class WeeklyTask {

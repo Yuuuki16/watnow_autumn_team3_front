@@ -7,6 +7,7 @@ import 'package:watnow_autumn_team3_front/pages/home/todo/todo_add_page.dart';
 import 'package:watnow_autumn_team3_front/pages/home/todo/todo_models.dart';
 import 'package:watnow_autumn_team3_front/pages/home/todo/todo_page.dart';
 import 'package:watnow_autumn_team3_front/pages/home/group_page.dart';
+import 'package:watnow_autumn_team3_front/pages/setting/setting_page.dart';
 
 class AppState extends StatefulWidget {
   const AppState({super.key});
@@ -86,6 +87,7 @@ class _AppStateState extends State<AppState> {
       title: input.title,
       deadline: input.deadline,
       expectedDate: input.expectedDate,
+      repeat: input.repeat,
     );
     setState(() {
       if (dayIndex == -1) {
@@ -101,6 +103,48 @@ class _AppStateState extends State<AppState> {
     });
   }
 
+  void _editTask({
+    required int dayIndex,
+    required int taskIndex,
+    required NewTaskInput input,
+  }) {
+    final originalTask = _weeklyTasks[dayIndex].tasks[taskIndex];
+    final updatedTask = TaskItem(
+      title: input.title,
+      isDone: originalTask.isDone,
+      deadline: input.deadline,
+      expectedDate: input.expectedDate,
+      repeat: input.repeat,
+    );
+
+    setState(() {
+      final originalDayLabel = _weeklyTasks[dayIndex].dayLabel;
+      if (input.dayLabel == originalDayLabel) {
+        _weeklyTasks[dayIndex].tasks[taskIndex] = updatedTask;
+      } else {
+        _weeklyTasks[dayIndex].tasks.removeAt(taskIndex);
+        final targetDayIndex = _weeklyTasks
+            .indexWhere((element) => element.dayLabel == input.dayLabel);
+        if (targetDayIndex == -1) {
+          _weeklyTasks.add(
+            WeeklyTask(
+              dayLabel: input.dayLabel,
+              tasks: [updatedTask],
+            ),
+          );
+        } else {
+          _weeklyTasks[targetDayIndex].tasks.add(updatedTask);
+        }
+      }
+    });
+  }
+
+  void _deleteTask(int dayIndex, int taskIndex) {
+    setState(() {
+      _weeklyTasks[dayIndex].tasks.removeAt(taskIndex);
+    });
+  }
+
   void _openTaskInput(BuildContext context) {
     showDialog(
       context: context,
@@ -108,10 +152,41 @@ class _AppStateState extends State<AppState> {
     );
   }
 
+  void _openTaskEditor(BuildContext context, int dayIndex, int taskIndex) {
+    final task = _weeklyTasks[dayIndex].tasks[taskIndex];
+    final dayLabel = _weeklyTasks[dayIndex].dayLabel;
+    final initial = NewTaskInput(
+      dayLabel: dayLabel,
+      title: task.title,
+      deadline: task.deadline,
+      expectedDate: task.expectedDate,
+      repeat: task.repeat,
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) => TaskInputDialog(
+        initialInput: initial,
+        onSave: (input) => _editTask(
+          dayIndex: dayIndex,
+          taskIndex: taskIndex,
+          input: input,
+        ),
+        onDelete: () => _deleteTask(dayIndex, taskIndex),
+      ),
+    );
+  }
+
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  void _openSetting(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const SettingPage()),
+    );
   }
 
   Widget _buildCurrentPage() {
@@ -122,20 +197,28 @@ class _AppStateState extends State<AppState> {
           weeklyTasks: _weeklyTasks,
           percent: _cactusPercent,
           cactusImagePath: _cactusImagePath,
+          onTapSetting: () => _openSetting(context),
         );
       case 1:
         return HomePage(
           percent: _cactusPercent,
           imagePath: _cactusImagePath,
+          onTapSetting: () => _openSetting(context),
         );
       case 2:
         return TodoPage(
           weeklyTasks: _weeklyTasks,
           onToggleTask: _toggleTask,
           onTapAdd: () => _openTaskInput(context),
+          onLongPressTask: (dayIndex, taskIndex) =>
+              _openTaskEditor(context, dayIndex, taskIndex),
+          onTapSetting: () => _openSetting(context),
         );
       case 3:
-        return InsightPage(weeklyTasks: _weeklyTasks);
+        return InsightPage(
+          weeklyTasks: _weeklyTasks,
+          onTapSetting: () => _openSetting(context),
+        );
       default:
         return const SizedBox.shrink();
     }

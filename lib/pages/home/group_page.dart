@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:watnow_autumn_team3_front/pages/home/todo/todo_models.dart';
 
 class GroupPage extends StatelessWidget {
@@ -8,12 +9,14 @@ class GroupPage extends StatelessWidget {
     required this.weeklyTasks,
     required this.percent,
     required this.cactusImagePath,
+    this.onTapSetting,
   });
 
   final String memberName;
   final List<WeeklyTask> weeklyTasks;
   final int percent;
   final String cactusImagePath;
+  final VoidCallback? onTapSetting;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,7 @@ class GroupPage extends StatelessWidget {
       backgroundColor: beige,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: const EdgeInsets.fromLTRB(24, 32, 28, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -47,13 +50,13 @@ class GroupPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person_outline,
-                      color: Colors.grey.shade600,
-                      size: 28,
+                  GestureDetector(
+                    onTap: onTapSetting,
+                    behavior: HitTestBehavior.opaque,
+                    child: SvgPicture.asset(
+                      'assets/icons/setting.svg',
+                      width: 32,
+                      height: 32,
                     ),
                   ),
                 ],
