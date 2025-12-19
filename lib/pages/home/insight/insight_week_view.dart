@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'insight_all_view.dart';
 
-/// インサイト（週）画面。バックエンドの週次データを反映させる前提で、UIは全期間と共通。
+/// インサイト（週表示）
+/// UI は InsightScreen を使い回して、フラグで週/全期間を切り替える
 class InsightWeekView extends StatelessWidget {
-  InsightWeekView({super.key, InsightData? data})
-      : data = data ?? InsightData.sampleWeek();
+  const InsightWeekView({super.key, required this.data});
 
   final InsightData data;
 
@@ -16,3 +16,4 @@ class InsightWeekView extends StatelessWidget {
     );
   }
 }
+

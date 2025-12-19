@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:watnow_autumn_team3_front/pages/home/home_page.dart';
 import 'package:watnow_autumn_team3_front/pages/home/insight/insight_page.dart';
-import 'package:watnow_autumn_team3_front/pages/home/todo_page.dart';
+import 'package:watnow_autumn_team3_front/pages/home/todo/todo_add_page.dart';
+import 'package:watnow_autumn_team3_front/pages/home/todo/todo_models.dart';
+import 'package:watnow_autumn_team3_front/pages/home/todo/todo_page.dart';
 import 'package:watnow_autumn_team3_front/pages/home/group_page.dart';
 
 class AppState extends StatefulWidget {
@@ -16,17 +18,23 @@ class AppState extends StatefulWidget {
 class _AppStateState extends State<AppState> {
   int _currentIndex = 1;
 
-  final List<WeeklyTask> _weeklyTasks = [
+   final List<WeeklyTask> _weeklyTasks = [
     WeeklyTask(
       dayLabel: '月曜日',
       tasks: [
-        TaskItem(title: '英語ＳＷ　課題', isDone: true),
+        TaskItem(
+          title: '経済学入門　課題',
+          isDone: true,
+        ),
       ],
     ),
     WeeklyTask(
       dayLabel: '火曜日',
       tasks: [
-        TaskItem(title: '経済学入門', isDone: true),
+        TaskItem(
+          title: '英語AI',
+          isDone: true,
+        ),
       ],
     ),
     WeeklyTask(dayLabel: '水曜日', tasks: []),
@@ -35,6 +43,7 @@ class _AppStateState extends State<AppState> {
     WeeklyTask(dayLabel: '土曜日', tasks: []),
     WeeklyTask(dayLabel: '日曜日', tasks: []),
   ];
+
 
   int get _rawPercent {
     final total =
@@ -73,16 +82,21 @@ class _AppStateState extends State<AppState> {
   void _addTask(NewTaskInput input) {
     final dayIndex =
         _weeklyTasks.indexWhere((element) => element.dayLabel == input.dayLabel);
+    final task = TaskItem(
+      title: input.title,
+      deadline: input.deadline,
+      expectedDate: input.expectedDate,
+    );
     setState(() {
       if (dayIndex == -1) {
         _weeklyTasks.add(
           WeeklyTask(
             dayLabel: input.dayLabel,
-            tasks: [TaskItem(title: input.title)],
+            tasks: [task],
           ),
         );
       } else {
-        _weeklyTasks[dayIndex].tasks.add(TaskItem(title: input.title));
+        _weeklyTasks[dayIndex].tasks.add(task);
       }
     });
   }
@@ -121,7 +135,7 @@ class _AppStateState extends State<AppState> {
           onTapAdd: () => _openTaskInput(context),
         );
       case 3:
-        return const InsightPage();
+        return InsightPage(weeklyTasks: _weeklyTasks);
       default:
         return const SizedBox.shrink();
     }
@@ -133,7 +147,7 @@ class _AppStateState extends State<AppState> {
       body: _buildCurrentPage(),
       bottomNavigationBar: SafeArea(
         child: Container(
-          color: const Color(0xA8006400),
+          color: const Color.fromARGB(148, 116, 186, 116),
           height: 80,
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
