@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+// lib/app/app_state.dart
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:watnow_autumn_team3_front/pages/home/home_page.dart';
@@ -36,8 +37,7 @@ class _AppStateState extends State<AppState> {
   ];
 
   int get _completionPercent {
-    final total =
-        _weeklyTasks.fold<int>(0, (sum, day) => sum + day.tasks.length);
+    final total = _weeklyTasks.fold<int>(0, (sum, day) => sum + day.tasks.length);
     if (total == 0) return 0;
 
     final done = _weeklyTasks.fold<int>(
@@ -48,22 +48,6 @@ class _AppStateState extends State<AppState> {
     return ((done / total) * 100).round();
   }
 
-  int get _cactusPercent {
-    const levels = [0, 5, 10, 20, 30, 50, 90, 100];
-    int closest = levels.first;
-    int minDiff = (levels.first - _completionPercent).abs();
-    for (final level in levels) {
-      final diff = (level - _completionPercent).abs();
-      if (diff < minDiff) {
-        minDiff = diff;
-        closest = level;
-      }
-    }
-    return closest;
-  }
-
-  String get _cactusImagePath => 'assets/images/${_cactusPercent}per.png';
-
   void _toggleTask(int dayIndex, int taskIndex, bool value) {
     setState(() {
       _weeklyTasks[dayIndex].tasks[taskIndex].isDone = value;
@@ -72,8 +56,7 @@ class _AppStateState extends State<AppState> {
 
   void _addTask(NewTaskInput input) {
     final dayLabel = input.dayLabel;
-    final dayIndex =
-        _weeklyTasks.indexWhere((element) => element.dayLabel == dayLabel);
+    final dayIndex = _weeklyTasks.indexWhere((e) => e.dayLabel == dayLabel);
 
     final task = TaskItem(
       title: input.title,
@@ -91,6 +74,7 @@ class _AppStateState extends State<AppState> {
     });
   }
 
+  /// ✅ 編集（曜日変更にも対応）
   void _editTask({
     required int dayIndex,
     required int taskIndex,
@@ -122,19 +106,23 @@ class _AppStateState extends State<AppState> {
           _weeklyTasks.indexWhere((e) => e.dayLabel == input.dayLabel);
 
       if (targetDayIndex == -1) {
-        _weeklyTasks.add(WeeklyTask(dayLabel: input.dayLabel, tasks: [updatedTask]));
+        _weeklyTasks.add(
+          WeeklyTask(dayLabel: input.dayLabel, tasks: [updatedTask]),
+        );
       } else {
         _weeklyTasks[targetDayIndex].tasks.add(updatedTask);
       }
     });
   }
 
+  /// ✅ 削除
   void _deleteTask(int dayIndex, int taskIndex) {
     setState(() {
       _weeklyTasks[dayIndex].tasks.removeAt(taskIndex);
     });
   }
 
+  /// ✅ 追加ダイアログ（引数なし）
   void _openTaskInput() {
     showDialog(
       context: context,
@@ -142,7 +130,7 @@ class _AppStateState extends State<AppState> {
     );
   }
 
-  void _openTaskEditor(BuildContext context, int dayIndex, int taskIndex) {
+  void _openTaskEditor(int dayIndex, int taskIndex) {
     final task = _weeklyTasks[dayIndex].tasks[taskIndex];
     final dayLabel = _weeklyTasks[dayIndex].dayLabel;
 
@@ -180,20 +168,19 @@ class _AppStateState extends State<AppState> {
 
   Widget _buildCurrentPage() {
     switch (_currentIndex) {
-      case 1:
-        return HomePage(
-          percent: _completionPercent,
-          imagePath: _cactusImagePath,
-          onTapSetting: _openSetting,
-        );
-
       case 0:
         return TodoPage(
           weeklyTasks: _weeklyTasks,
           onToggleTask: _toggleTask,
           onTapAdd: _openTaskInput,
-          onLongPressTask: (dayIndex, taskIndex) =>
-              _openTaskEditor(context, dayIndex, taskIndex),
+          onLongPressTask: (dayIndex, taskIndex) => _openTaskEditor(dayIndex, taskIndex),
+          onTapSetting: _openSetting,
+        );
+
+      case 1:
+        // ✅ HomePage に imagePath が無い前提（あなたのエラーに合わせた）
+        return HomePage(
+          percent: _completionPercent,
           onTapSetting: _openSetting,
         );
 
@@ -218,7 +205,7 @@ class _AppStateState extends State<AppState> {
           height: 80,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // ✅ overflow対策
             children: [
               _BottomNavIcon(
                 assetPath: 'assets/icons/icon_list.svg',

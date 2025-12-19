@@ -107,7 +107,7 @@ class _TaskListPageState extends State<TaskListPage> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:8000/tasks/'),
+        Uri.parse('https://watnow-team3-backend-2025.onrender.com/tasks/'),
         headers: {'Authorization': 'Bearer $jwt'},
       );
 

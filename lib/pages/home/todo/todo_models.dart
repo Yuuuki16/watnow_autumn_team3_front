@@ -1,13 +1,14 @@
-import "package:flutter/material.dart";
-
 class TaskItem {
   TaskItem({
+    this.id,
     required this.title,
     this.isDone = false,
     this.deadline,
     this.expectedDate,
     this.repeat,
   });
+
+  final String? id;
 
   final String title;
   bool isDone;
