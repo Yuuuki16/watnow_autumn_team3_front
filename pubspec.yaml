@@ -10,12 +10,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.6.0
 
 
 
   # iOS 風アイコン
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.0.7 
+  supabase_flutter: ^2.12.0
 
 dev_dependencies:
   flutter_test:
