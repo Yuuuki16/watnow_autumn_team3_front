@@ -1,8 +1,10 @@
 
+// }
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:watnow_autumn_team3_front/app/app_state.dart'; 
 import 'createaccount.dart'; 
+import 'package:watnow_autumn_team3_front/api/api_client.dart'; // 作成したファイルを指定
 
 // デザイン用カラー（変更なし）
 const Color _primaryGreen = Color(0xFF386641);
@@ -46,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _isLoading = false; // 処理中の表示用
 
+  final api = ApiClient('http://10.0.2.2:8000');
   // ② ログイン処理の実装
   Future<void> _handleLogin() async {
     setState(() => _isLoading = true);
@@ -200,3 +203,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+// final api = ApiClient('http://127.0.0.1:8000');
+
+// final me = await api.getJson('/auth/me');
+
+// print(me);
+// { user_id: "...", chronotype: "...", ai_status: "...", created_at: "..." }
