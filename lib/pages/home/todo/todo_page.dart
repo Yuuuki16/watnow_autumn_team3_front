@@ -10,11 +10,15 @@ class TodoPage extends StatelessWidget {
     required this.weeklyTasks,
     required this.onToggleTask,
     required this.onTapAdd,
+    required this.onLongPressTask,
+    this.onTapSetting,
   });
 
   final List<WeeklyTask> weeklyTasks;
   final void Function(int dayIndex, int taskIndex, bool value) onToggleTask;
   final VoidCallback onTapAdd;
+  final void Function(int dayIndex, int taskIndex) onLongPressTask;
+  final VoidCallback? onTapSetting;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +44,8 @@ class TodoPage extends StatelessWidget {
                           dayIndex: index,
                           onToggle: (taskIndex, value) =>
                               onToggleTask(index, taskIndex, value),
+                          onLongPress: (taskIndex) =>
+                              onLongPressTask(index, taskIndex),
                         );
                       },
                     ),
@@ -51,9 +57,7 @@ class TodoPage extends StatelessWidget {
               top: 32,
               right: 28,
               child: GestureDetector(
-                onTap: () {
-                  // 設定画面へ
-                },
+                onTap: onTapSetting,
                 child: SvgPicture.asset(
                   'assets/icons/setting.svg',
                   width: 32,
@@ -116,11 +120,13 @@ class _DaySection extends StatelessWidget {
     required this.day,
     required this.dayIndex,
     required this.onToggle,
+    required this.onLongPress,
   });
 
   final WeeklyTask day;
   final int dayIndex;
   final void Function(int taskIndex, bool value) onToggle;
+  final void Function(int taskIndex) onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -159,13 +165,16 @@ class _DaySection extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        task.title,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Banana',
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
+                      child: GestureDetector(
+                        onLongPress: () => onLongPress(taskIndex),
+                        child: Text(
+                          task.title,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Banana',
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ),
