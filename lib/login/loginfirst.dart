@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:watnow_autumn_team3_front/app/app_state.dart'; // ✅ 追加
 import 'createaccount.dart'; // 🔸 新規登録画面への遷移用
+import 'package:supabase_flutter/supabase_flutter.dart'; // これをimportする
 
 // デザインに合わせて色を定義
 const Color _primaryGreen = Color(0xFF386641);
