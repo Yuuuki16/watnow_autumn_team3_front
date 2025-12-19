@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 const Color _bg = Color(0xFFFAF9F6);
 const Color _titleColor = Color(0xD9006400);
+const double _bodyFontSize = 16;
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -15,6 +16,7 @@ class _SettingPageState extends State<SettingPage> {
   bool _profileOpen = false;
   bool _notificationOpen = false;
   bool _accountOpen = false;
+
   bool _pushEnabled = false;
   final TextEditingController _nameController = TextEditingController();
 
@@ -22,6 +24,12 @@ class _SettingPageState extends State<SettingPage> {
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -36,13 +44,14 @@ class _SettingPageState extends State<SettingPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // ===== タイトル行 =====
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         '設定',
                         style: TextStyle(
-                          fontSize: 38,
+                          fontSize: 42,
                           fontWeight: FontWeight.w800,
                           color: _titleColor,
                           fontFamily: 'Building',
@@ -62,7 +71,10 @@ class _SettingPageState extends State<SettingPage> {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 18),
+
+                  // ===== プロフィール =====
                   _SectionTile(
                     title: 'プロフィール設定',
                     isOpen: _profileOpen,
@@ -72,12 +84,12 @@ class _SettingPageState extends State<SettingPage> {
                       children: [
                         const SizedBox(height: 12),
                         const Text(
-                          'ユーザー名変更',
+                          'ユーザー名の変更',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: _bodyFontSize,
                             fontWeight: FontWeight.w700,
                             color: Colors.black,
-                            fontFamily: 'Building',
+                            fontFamily: 'Banana',
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -91,15 +103,22 @@ class _SettingPageState extends State<SettingPage> {
                                     horizontal: 14,
                                     vertical: 12,
                                   ),
-                                  hintText: '名前を入力してください',
+                                  hintText: 'ユーザー名を入力してください',
                                   hintStyle: const TextStyle(
                                     color: Color(0xFF9E9E9E),
                                     fontFamily: 'Banana',
+                                    fontSize: _bodyFontSize,
                                   ),
-                                  border: OutlineInputBorder(
+                                  enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(16),
                                     borderSide: const BorderSide(
                                       color: Color(0xFFB0B0B0),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF707070),
                                     ),
                                   ),
                                 ),
@@ -120,18 +139,15 @@ class _SettingPageState extends State<SettingPage> {
                               ),
                               onPressed: () {
                                 FocusScope.of(context).unfocus();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('ユーザー名を更新しました'),
-                                  ),
-                                );
+                                _showSnack('ユーザー名を保存しました');
                               },
                               child: const Text(
                                 '保存',
                                 style: TextStyle(
+                                  fontSize: _bodyFontSize,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
-                                  fontFamily: 'Building',
+                                  fontFamily: 'Banana',
                                 ),
                               ),
                             ),
@@ -140,12 +156,16 @@ class _SettingPageState extends State<SettingPage> {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 12),
+
+                  // ===== 通知 =====
                   _SectionTile(
                     title: '通知設定',
                     isOpen: _notificationOpen,
-                    onTap: () =>
-                        setState(() => _notificationOpen = !_notificationOpen),
+                    onTap: () => setState(
+                      () => _notificationOpen = !_notificationOpen,
+                    ),
                     child: Column(
                       children: [
                         const SizedBox(height: 12),
@@ -154,30 +174,32 @@ class _SettingPageState extends State<SettingPage> {
                           children: [
                             const Padding(
                               padding: EdgeInsets.only(left: 12),
-                              child: Text(
-                                'プッシュ通知',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black,
-                                  fontFamily: 'Building',
-                                ),
+                            child: Text(
+                              'プッシュ通知',
+                              style: TextStyle(
+                                fontSize: _bodyFontSize,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black,
+                                fontFamily: 'Banana',
                               ),
+                            ),
                             ),
                             Switch(
                               value: _pushEnabled,
                               activeColor: Colors.white,
                               activeTrackColor:
-                                  const Color.fromARGB(255, 94, 158, 109),
-                              onChanged: (v) =>
-                                  setState(() => _pushEnabled = v),
+                                  Color.fromARGB(255, 94, 158, 109),
+                              onChanged: (v) => setState(() => _pushEnabled = v),
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 12),
+
+                  // ===== アカウント =====
                   _SectionTile(
                     title: 'アカウント',
                     isOpen: _accountOpen,
@@ -187,34 +209,27 @@ class _SettingPageState extends State<SettingPage> {
                       children: [
                         const SizedBox(height: 12),
                         TextButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('ログアウトしました')),
-                            );
-                          },
+                          onPressed: () => _showSnack('ログアウトしました'),
                           child: const Text(
                             'ログアウト',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: _bodyFontSize,
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
-                              fontFamily: 'Building',
+                              fontFamily: 'Banana',
                             ),
                           ),
                         ),
                         TextButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('アカウント削除は未実装です')),
-                            );
-                          },
+                          onPressed: () =>
+                              _showSnack('アカウント削除は未実装です'),
                           child: const Text(
                             'アカウント削除',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: _bodyFontSize,
                               fontWeight: FontWeight.w800,
                               color: Colors.red,
-                              fontFamily: 'Building',
+                              fontFamily: 'Banana',
                             ),
                           ),
                         ),
@@ -224,12 +239,40 @@ class _SettingPageState extends State<SettingPage> {
                 ],
               ),
             ),
+
+            // ===== 戻るボタン =====
             Positioned(
-              top: 24,
-              left: 12,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: _titleColor),
+              left: 16,
+              bottom: 20,
+              child: TextButton.icon(
+                style: TextButton.styleFrom(
+                  foregroundColor: _titleColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                ),
                 onPressed: () => Navigator.of(context).maybePop(),
+                icon: const Icon(Icons.arrow_back_ios_new, size: 18,shadows: [
+                            Shadow(
+                              color: Color.fromRGBO(0, 0, 0, 0.25),
+                              offset: Offset(0, 3),
+                              blurRadius: 6,
+                            ),
+                          ],),
+                label: const Text(
+                  'ホームへ',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Building',
+                    shadows: [
+                            Shadow(
+                              color: Color.fromRGBO(0, 0, 0, 0.25),
+                              offset: Offset(0, 3),
+                              blurRadius: 6,
+                            ),
+                          ],
+                  ),
+                ),
               ),
             ),
           ],
@@ -269,10 +312,10 @@ class _SectionTile extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: _bodyFontSize,
                   fontWeight: FontWeight.w700,
                   color: Colors.black,
-                  fontFamily: 'Building',
+                  fontFamily: 'Banana',
                 ),
               ),
             ],
