@@ -87,11 +87,35 @@ class _AppStateState extends State<AppState> {
   }
 
   // --- 修正: context 引数を削除し、内部の context を使用 ---
-  void _openTaskInput() {
+  void _openTaskInput(BuildContext context) {
     showDialog(
       context: context,
       builder: (_) => TaskInputDialog(onSave: _addTask),
     );
+  }
+
+  void _editTask({
+    required int dayIndex,
+    required int taskIndex,
+    required NewTaskInput input,
+  }) {
+    final oldTask = _weeklyTasks[dayIndex].tasks[taskIndex];
+    final newTask = TaskItem(
+      title: input.title,
+      isDone: oldTask.isDone,
+      deadline: input.deadline ?? oldTask.deadline,
+      expectedDate: input.expectedDate ?? oldTask.expectedDate,
+      repeat: input.repeat ?? oldTask.repeat,
+    );
+    setState(() {
+      _weeklyTasks[dayIndex].tasks[taskIndex] = newTask;
+    });
+  }
+
+  void _deleteTask(int dayIndex, int taskIndex) {
+    setState(() {
+      _weeklyTasks[dayIndex].tasks.removeAt(taskIndex);
+    });
   }
 
   void _openTaskEditor(BuildContext context, int dayIndex, int taskIndex) {
