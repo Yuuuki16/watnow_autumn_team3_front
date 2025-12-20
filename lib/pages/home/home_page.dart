@@ -3,19 +3,30 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatelessWidget {
   final int percent;
-  final String imagePath;
   final VoidCallback? onTapSetting;
 
   const HomePage({
     super.key,
     required this.percent,
-    required this.imagePath,
     this.onTapSetting,
   });
+
+  String _assetForPercent() {
+    if (percent >= 100) return 'assets/images/100per.png';
+    if (percent >= 90) return 'assets/images/90per.png';
+    if (percent >= 70) return 'assets/images/70per.png';
+    if (percent >= 50) return 'assets/images/50per.png';
+    if (percent >= 30) return 'assets/images/30per.png';
+    if (percent >= 20) return 'assets/images/20per.png';
+    if (percent >= 10) return 'assets/images/10per.png';
+    if (percent >= 5) return 'assets/images/5per.png';
+    return 'assets/images/0per.png';
+  }
 
   @override
   Widget build(BuildContext context) {
     const titleColor = Color(0xD9006400);
+    final imagePath = _assetForPercent();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),

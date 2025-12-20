@@ -178,11 +178,9 @@ class _AppStateState extends State<AppState> {
         );
 
       case 1:
-        // ✅ HomePage に imagePath が無い前提（あなたのエラーに合わせた）
         return HomePage(
           percent: _completionPercent,
-          onTapSetting: _openSetting,
-        );
+          onTapSetting: _openSetting);
 
       case 2:
         return InsightPage(
