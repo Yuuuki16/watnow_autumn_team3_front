@@ -186,35 +186,36 @@ class _AppStateState extends State<AppState> {
     );
   }
 
-  Widget _buildCurrentPage() {
-    switch (_currentIndex) {
-      case 0:
-        return TodoPage(
-          weeklyTasks: _weeklyTasks,
-          onToggleTask: _toggleTask,
-          onTapAdd: _openTaskInput,
-          onLongPressTask: (dayIndex, taskIndex) =>
-              _openTaskEditor(dayIndex, taskIndex),
-          onTapSetting: _openSetting,
-        );
+Widget _buildCurrentPage() {
+  switch (_currentIndex) {
+    case 0:
+      return TodoPage(
+        weeklyTasks: _weeklyTasks,
+        onToggleTask: _toggleTask,
+        onTapAdd: _openTaskInput,
+        onLongPressTask: (dayIndex, taskIndex) =>
+            _openTaskEditor(dayIndex, taskIndex),
+        onTapSetting: _openSetting,
+      );
 
-      case 1:
-        return HomePage(
-          percent: _cactusPercent,
-          imagePath: _cactusImagePath,
-          onTapSetting: _openSetting,
-        );
+    case 1:
+      return HomePage(
+        percent: _cactusPercent,
+        imagePath: _cactusImagePath,
+        onTapSetting: _openSetting,
+      );
 
-      case 2:
-        return InsightPage(
-          weeklyTasks: _weeklyTasks,
-          onTapSetting: _openSetting,
-        );
+    case 2:
+      return InsightPage(
+        weeklyTasks: _weeklyTasks,
+        onTapSetting: _openSetting,
+      );
 
-      default:
-        return const SizedBox.shrink();
-    }
+    default:
+      return const SizedBox.shrink();
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
