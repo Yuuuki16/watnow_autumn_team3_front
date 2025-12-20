@@ -1,4 +1,4 @@
-// lib/app/app_state.dart
+﻿// lib/app/app_state.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -36,8 +36,10 @@ class _AppStateState extends State<AppState> {
     WeeklyTask(dayLabel: '日曜日', tasks: []),
   ];
 
+  /// 完了率（0〜100）
   int get _completionPercent {
-    final total = _weeklyTasks.fold<int>(0, (sum, day) => sum + day.tasks.length);
+    final total =
+        _weeklyTasks.fold<int>(0, (sum, day) => sum + day.tasks.length);
     if (total == 0) return 0;
 
     final done = _weeklyTasks.fold<int>(
@@ -47,6 +49,24 @@ class _AppStateState extends State<AppState> {
 
     return ((done / total) * 100).round();
   }
+
+  /// サボテン画像に合わせた段階％（0,5,10,20,30,50,70,90,100 のどれか）
+  int get _cactusPercent {
+    const levels = [0, 5, 10, 20, 30, 50, 70, 90, 100];
+    int closest = levels.first;
+    int minDiff = (levels.first - _completionPercent).abs();
+
+    for (final level in levels) {
+      final diff = (level - _completionPercent).abs();
+      if (diff < minDiff) {
+        minDiff = diff;
+        closest = level;
+      }
+    }
+    return closest;
+  }
+
+  String get _cactusImagePath => 'assets/images/${_cactusPercent}per.png';
 
   void _toggleTask(int dayIndex, int taskIndex, bool value) {
     setState(() {
@@ -166,32 +186,36 @@ class _AppStateState extends State<AppState> {
     );
   }
 
-  Widget _buildCurrentPage() {
-    switch (_currentIndex) {
-      case 0:
-        return TodoPage(
-          weeklyTasks: _weeklyTasks,
-          onToggleTask: _toggleTask,
-          onTapAdd: _openTaskInput,
-          onLongPressTask: (dayIndex, taskIndex) => _openTaskEditor(dayIndex, taskIndex),
-          onTapSetting: _openSetting,
-        );
+Widget _buildCurrentPage() {
+  switch (_currentIndex) {
+    case 0:
+      return TodoPage(
+        weeklyTasks: _weeklyTasks,
+        onToggleTask: _toggleTask,
+        onTapAdd: _openTaskInput,
+        onLongPressTask: (dayIndex, taskIndex) =>
+            _openTaskEditor(dayIndex, taskIndex),
+        onTapSetting: _openSetting,
+      );
 
-      case 1:
-        return HomePage(
-          percent: _completionPercent,
-          onTapSetting: _openSetting);
+    case 1:
+      return HomePage(
+        percent: _cactusPercent,
+        imagePath: _cactusImagePath,
+        onTapSetting: _openSetting,
+      );
 
-      case 2:
-        return InsightPage(
-          weeklyTasks: _weeklyTasks,
-          onTapSetting: _openSetting,
-        );
+    case 2:
+      return InsightPage(
+        weeklyTasks: _weeklyTasks,
+        onTapSetting: _openSetting,
+      );
 
-      default:
-        return const SizedBox.shrink();
-    }
+    default:
+      return const SizedBox.shrink();
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +227,7 @@ class _AppStateState extends State<AppState> {
           height: 80,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // ✅ overflow対策
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _BottomNavIcon(
                 assetPath: 'assets/icons/icon_list.svg',
